@@ -479,10 +479,10 @@ class ShippableOrder
 								$product->fetch($line->fk_product);
 								$product->load_stock('warehouseopen');
 								$TBatch = $this->generateTBatch($line->id);
-								$shipping->addline_batch($TBatch);
+								$shipping->addline_batch($TBatch, $line->array_options);
 								
 							}else {
-								$shipping->addline($TEnt_comm[$line->id], $line->id, (($this->TlinesShippable[$line->id]['qty_shippable'] > $this->TlinesShippable[$line->id]['to_ship']) ? $this->TlinesShippable[$line->id]['to_ship'] : $this->TlinesShippable[$line->id]['qty_shippable']));
+								$shipping->addline($TEnt_comm[$line->id], $line->id, (($this->TlinesShippable[$line->id]['qty_shippable'] > $this->TlinesShippable[$line->id]['to_ship']) ? $this->TlinesShippable[$line->id]['to_ship'] : $this->TlinesShippable[$line->id]['qty_shippable']), $line->array_options);
 							}
 		
 						
@@ -543,7 +543,7 @@ class ShippableOrder
 					    if ($this->TlinesShippable[$line->id]['stock'] > 0)
 						{
                             $r  = ($this->TlinesShippable[$line->id]['qty_shippable'] > $this->TlinesShippable[$line->id]['to_ship']) ? $this->TlinesShippable[$line->id]['to_ship'] : $this->TlinesShippable[$line->id]['qty_shippable'];
-							$shipping->addline($TEnt_comm[$this->order->id], $line->id, $r);
+							$shipping->addline($TEnt_comm[$this->order->id], $line->id, $r, $line->array_options);
 						}
 					}
 
