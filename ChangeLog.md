@@ -8,8 +8,12 @@
 - FIX: Compatibility V16 - newToken and family - *06/06/2022* - 2.2.2
 - FIX: Stock's column colour correction on order - *2021-10-06* - 2.2.1
 - NEW: Colonne stock virtuel - *2021-09-21* - 2.2.0
+
+## 2.1
+
 - FIX: v13 — 14 compatibility: societe_id,  - *2021-09-09* - 2.1.3
 - FIX : Compatibility V13 - Add token renewal - *18/05/2021* 2.1.2
+- FIX : le tableau d'extrafields des lignes de commandes n'est pas recopié sur les lignes d'expéditions (dans le cas où ils ont le même nom) - *29/09/2022* - 2.1.1
 
 ## 2.0
 - NEW: v3.9 — 11 compatibility
