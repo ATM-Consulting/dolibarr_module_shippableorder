@@ -297,8 +297,8 @@ class ShippableOrder
 			return '';
 		}
 
-        $picto = self::getPicto($isShippable['to_ship'], $isShippable['shippable'], $isShippable['stock'], $isShippable['qty_shippable'], $line);
-        $virtualPicto = self::getPicto($isShippable['to_ship'], $isShippable['isShippableVirtual'], $isShippable['stock_virtuel'], $isShippable['qtyShippableVirtual'], $line);
+        $picto = self::getPicto('stock', $isShippable['to_ship'], $isShippable['shippable'], $isShippable['stock'], $isShippable['qty_shippable'], $line);
+        $virtualPicto = self::getPicto('virtualStock', $isShippable['to_ship'], $isShippable['isShippableVirtual'], $isShippable['stock_virtuel'], $isShippable['qtyShippableVirtual'], $line);
 
 		if($withStockVisu) {
 			return array($isShippable['stock'].' '.$picto, $isShippable['stock_virtuel'].' '.$virtualPicto);
@@ -338,12 +338,12 @@ class ShippableOrder
             || !empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_DISPATCH_ORDER)
             || !empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)
             || !empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_BILL)) {
-            $statusCmdFourn = '"Accepté", "Envoyé", "Reçu partiellement"';
+            $statusCmdFourn = '"Accepté", "Commandé", "Reçu partiellement"';
             if (isset($includedraftpoforvirtual)) {
                 $statusCmdFourn .= ',"Brouillon", "Validé"';
             }
             if(empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)) $out .= $langs->trans('VirtualStockDetail', 'commandes fournisseurs',$statusCmdFourn);
-            $out .= $langs->trans('VirtualStockDetailReception');
+            $out .= $langs->trans('VirtualStockDetail', 'receptions fournisseurs', '"Validé" et "Cloturé"');
 
 		}
         return $out;
@@ -351,16 +351,17 @@ class ShippableOrder
 
     /**
      * Get picto shippable order line
-     * @param float $toship
+     * @param string $type
+	 * @param float $toship
      * @param float $shippable
      * @param float $stock
      * @param float $qty_shippable
      * @param OrderLine $line
      * @return string
      */
-    public static function getPicto($toship, $shippable, $stock, $qty_shippable, $line) {
+    public static function getPicto($type, $toship, $shippable, $stock, $qty_shippable, $line) {
         $pictopath = self::getPictoPath($toship, $shippable);
-		$infos = self::getPictoInfos($stock, $toship, $qty_shippable);
+		$infos = self::getPictoInfos($type, $stock, $toship, $qty_shippable);
         $picto = '<img src="'.$pictopath.'" border="0" title="'.$infos.'">';
 		if($toship > 0 && $toship != $line->qty) {
 			$picto.= ' ('.$toship.')';
@@ -370,17 +371,24 @@ class ShippableOrder
 
     /**
      * Get picto qty infos
-     * @param float $stock
+     * @param string $type
+	 * @param float $stock
      * @param float $toship
      * @param float $qty_shippable
      * @return string
      */
-    public static function getPictoInfos($stock, $toship, $qty_shippable) {
+    public static function getPictoInfos($type, $stock, $toship, $qty_shippable) {
         global $langs;
-        $infos = $langs->trans('QtyInStock', $stock);
-        $infos .= " - ".$langs->trans('RemainToShip', $toship);
-        $infos .= " - ".$langs->trans('QtyShippable', $qty_shippable);
-        return $infos;
+        if($type == 'stock') {
+			$infos = $langs->trans('QtyInStock', $stock);
+			$infos .= " - ".$langs->trans('RemainToShip', $toship);
+			$infos .= " - ".$langs->trans('QtyShippable', $qty_shippable);
+			return $infos;
+		} else if($type == 'virtualStock') {
+			$infos = $langs->trans('VirtualQtyInStock', $stock);
+			$infos .= " - ".$langs->trans('RemainToShip', $toship);
+			return $infos;
+		}
     }
 
     /**
