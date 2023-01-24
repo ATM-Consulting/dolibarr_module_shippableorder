@@ -71,6 +71,18 @@ FilesArchived=Fichiers PDF archivés
 ConfirmArchiveFiles=Êtes-vous sûr de vouloir archiver les documents PDF ?
 
 
-SelectByLine=Sélection par ligne de commande plutôt que par commande
-VirtualStockDetailHeader=Le stock théorique tient compte de :  %s
-VirtualStockDetail=</br> Les %s aux statuts %s
+SelectByLine = Sélection par ligne de commande plutôt que par commande
+VirtualStockDetailHeader = Le stock théorique tient compte de :  %s
+VirtualStockDetail = </br> > Les %s aux statuts %s
+MO = ordres de fabrication
+MO_status = "Validé" et "En cours"
+Orders = commandes clients
+Orders_status = "Validé" et "En cours"
+Shipments = expéditions
+Shipments_status = "Validé" et "Cloturé"
+Shipments_status_closed = "Cloturé"
+PO = commandes fournisseurs
+PO_status = "Approuvé", "Commandé", "Partiellement reçue"
+PO_status_all =,"Brouillon", "Validé"
+Receptions = réceptions fournisseurs
+Receptions_status = "Validé" et "Cloturé"

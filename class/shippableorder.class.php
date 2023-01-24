@@ -297,8 +297,8 @@ class ShippableOrder
 			return '';
 		}
 
-        $picto = self::getPicto('stock', $isShippable['to_ship'], $isShippable['shippable'], $isShippable['stock'], $isShippable['qty_shippable'], $line);
-        $virtualPicto = self::getPicto('virtualStock', $isShippable['to_ship'], $isShippable['isShippableVirtual'], $isShippable['stock_virtuel'], $isShippable['qtyShippableVirtual'], $line);
+        $picto = self::getPicto($isShippable['to_ship'], $isShippable['shippable'], $isShippable['stock'], $isShippable['qty_shippable'], $line, 'stock');
+        $virtualPicto = self::getPicto($isShippable['to_ship'], $isShippable['isShippableVirtual'], $isShippable['stock_virtuel'], $isShippable['qtyShippableVirtual'], $line, 'virtualStock');
 
 		if($withStockVisu) {
 			return array($isShippable['stock'].' '.$picto, $isShippable['stock_virtuel'].' '.$virtualPicto);
@@ -319,16 +319,16 @@ class ShippableOrder
         $out = $langs->trans('VirtualStockDetailHeader');
 
 		if (!empty($conf->mrp->enabled)) {
-			$out .= $langs->trans('VirtualStockDetail', 'ordres de fabrication','"Validé" et "En cours"');
+			$out .= $langs->trans('VirtualStockDetail', $langs->trans('MO'), $langs->trans('MO_status'));
 		}
 
 		// Stock decrease mode
 		if (!empty($conf->global->STOCK_CALCULATE_ON_SHIPMENT) || !empty($conf->global->STOCK_CALCULATE_ON_SHIPMENT_CLOSE) || !empty($conf->global->STOCK_CALCULATE_ON_BILL)) {
-            $out .= $langs->trans('VirtualStockDetail', 'commandes','"Validé" et "En cours"');
+            $out .= $langs->trans('VirtualStockDetail', $langs->trans('Orders'), $langs->trans('Orders_status'));
 			if (!empty($conf->global->STOCK_CALCULATE_ON_SHIPMENT)) {
-				$out .= $langs->trans('VirtualStockDetail', 'expeditions','"Validé" et "Cloturé"');
+				$out .= $langs->trans('VirtualStockDetail', $langs->trans('Shipments'), $langs->trans('Shipments_status'));
 			} elseif (!empty($conf->global->STOCK_CALCULATE_ON_SHIPMENT_CLOSE)) {
-				$out .= $langs->trans('VirtualStockDetail', 'expeditions','"Cloturé"');
+				$out .= $langs->trans('VirtualStockDetail', $langs->trans('Shipments'), $langs->trans('Shipments_status_closed'));
 			}
 
 		}
@@ -338,12 +338,12 @@ class ShippableOrder
             || !empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_DISPATCH_ORDER)
             || !empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)
             || !empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_BILL)) {
-            $statusCmdFourn = '"Accepté", "Commandé", "Reçu partiellement"';
+            $statusCmdFourn = 'PO_status';
             if (isset($includedraftpoforvirtual)) {
-                $statusCmdFourn .= ',"Brouillon", "Validé"';
+                $statusCmdFourn .= '_all';
             }
-            if(empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)) $out .= $langs->trans('VirtualStockDetail', 'commandes fournisseurs',$statusCmdFourn);
-            $out .= $langs->trans('VirtualStockDetail', 'receptions fournisseurs', '"Validé" et "Cloturé"');
+            if(empty($conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)) $out .= $langs->trans('VirtualStockDetail', $langs->trans('PO'), $langs->trans($statusCmdFourn));
+            $out .= $langs->trans('VirtualStockDetail', $langs->trans('Receptions'), $langs->trans('Receptions_status'));
 
 		}
         return $out;
@@ -359,9 +359,9 @@ class ShippableOrder
      * @param OrderLine $line
      * @return string
      */
-    public static function getPicto($type, $toship, $shippable, $stock, $qty_shippable, $line) {
+    public static function getPicto($toship, $shippable, $stock, $qty_shippable, $line, $type = 'stock') {
         $pictopath = self::getPictoPath($toship, $shippable);
-		$infos = self::getPictoInfos($type, $stock, $toship, $qty_shippable);
+		$infos = self::getPictoInfos($stock, $toship, $qty_shippable, $type);
         $picto = '<img src="'.$pictopath.'" border="0" title="'.$infos.'">';
 		if($toship > 0 && $toship != $line->qty) {
 			$picto.= ' ('.$toship.')';
@@ -377,7 +377,7 @@ class ShippableOrder
      * @param float $qty_shippable
      * @return string
      */
-    public static function getPictoInfos($type, $stock, $toship, $qty_shippable) {
+    public static function getPictoInfos($stock, $toship, $qty_shippable, $type = 'stock') {
         global $langs;
         if($type == 'stock') {
 			$infos = $langs->trans('QtyInStock', $stock);
@@ -681,12 +681,12 @@ class ShippableOrder
 
 			
 			if($nbShippingCreated > 0) {
-				if($conf->global->SHIPPABLEORDER_GENERATE_GLOBAL_PDF) $this->generate_global_pdf($TFiles);	
+				if(!empty($conf->global->SHIPPABLEORDER_GENERATE_GLOBAL_PDF)) $this->generate_global_pdf($TFiles);
 				
 				setEventMessage($langs->trans('NbShippingCreated', $nbShippingCreated));
 				$dol_version = (float) DOL_VERSION;
 				
-				if ($conf->global->SHIPPABLE_ORDER_DISABLE_AUTO_REDIRECT)
+				if (!empty($conf->global->SHIPPABLE_ORDER_DISABLE_AUTO_REDIRECT))
 				{
 
 					header("Location: ".$_SERVER["PHP_SELF"].'?'.http_build_query($TURL) );					
@@ -700,7 +700,7 @@ class ShippableOrder
 				setEventMessage($langs->trans('NoOrderSelectedOrAlreadySent'), 'warnings');
 				$dol_version = (float) DOL_VERSION;
 				
-				if ($conf->global->SHIPPABLE_ORDER_DISABLE_AUTO_REDIRECT)
+				if (!empty($conf->global->SHIPPABLE_ORDER_DISABLE_AUTO_REDIRECT))
 				{
 					header("Location: ".$_SERVER["PHP_SELF"].'?'.http_build_query($TURL) );					
 				}else{
