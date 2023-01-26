@@ -61,7 +61,11 @@ class modShippableOrder extends DolibarrModules
 		$this->description = "Description of module ShippableOrder";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 
+<<<<<<< Main_Pullup_FIx_virtual_stock_tooltip
 		$this->version = '2.3.3';
+=======
+		$this->version = '2.3.2';
+>>>>>>> main
 		// Url to the file with your last numberversion of this module
 		require_once __DIR__ . '/../../class/techatm.class.php';
 		$this->url_last_version = \shippableorder\TechATM::getLastModuleVersionUrl($this);

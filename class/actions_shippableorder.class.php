@@ -39,7 +39,11 @@ class ActionsShippableorder
                 $shippableOrder =  &$object->shippableorder;
                 $form = new Form($db);
                 $virtualTooltip = ShippableOrder::prepareTooltip();
+<<<<<<< Main_Pullup_FIx_virtual_stock_tooltip
                 $textColor = !empty($conf->global->THEME_ELDY_TEXTTITLE) ? $conf->global->THEME_ELDY_TEXTTITLE : '';
+=======
+            	$textColor = !empty($conf->global->THEME_ELDY_TEXTTITLE) ? $conf->global->THEME_ELDY_TEXTTITLE : '';
+>>>>>>> main
 
                 ?>
                 <script type="text/javascript">
