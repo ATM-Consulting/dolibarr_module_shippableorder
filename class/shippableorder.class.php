@@ -551,7 +551,6 @@ class ShippableOrder
 
 				foreach ($TToShip as $id_commande => $lineids)
 				{
-
 					$this->isOrderShippable($id_commande);
 
 					$shipping = new Expedition($db);
@@ -574,15 +573,13 @@ class ShippableOrder
 
 					foreach ($this->order->lines as $line)
 					{
-
-
                         $parameters = array('line' => $line ,'TEnt_comm'=>$TEnt_comm,'shipping'=> &$shipping);
                         $reshook = $hookmanager->executeHooks('handleExpeditionTitleAndTotal',$parameters , $this, $action);    // Note that $action and $object may have been modified by some hooks
-                        if ($reshook < 0){
+                        if ($reshook < 0) {
                             setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
                         }
-						if ($this->TlinesShippable[$line->id]['stock'] > 0 && in_array($line->id, $lineids))
-						{
+
+						if ($this->TlinesShippable[$line->id]['stock'] > 0 && in_array($line->id, $lineids)) {
                             if (! empty($conf->productbatch->enabled) && ! empty($line->fk_product) && ! empty($line->product_tobatch)){
 								dol_include_once('/product/class/product.class.php');
 								$product = new Product($db);
@@ -591,11 +588,20 @@ class ShippableOrder
 								$TBatch = $this->generateTBatch($line->id);
 								$shipping->addline_batch($TBatch, $line->array_options);
 
-							}else {
+							} else {
 								$shipping->addline($TEnt_comm[$line->id], $line->id, (($this->TlinesShippable[$line->id]['qty_shippable'] > $this->TlinesShippable[$line->id]['to_ship']) ? $this->TlinesShippable[$line->id]['to_ship'] : $this->TlinesShippable[$line->id]['qty_shippable']), $line->array_options);
 							}
+						}
+					}
 
-
+					// Manage Extrafields
+					$extrafields = new Extrafields ($db);
+					$shipping_ef_keys = array_keys($extrafields->fetch_name_optionals_label('expedition'));
+					$this->order->fetch_optionals();
+					foreach($this->order->array_options as $order_ef_key => $order_ef) {
+						$order_ef_name = preg_replace('/^options_/', '', $order_ef_key);
+						if (in_array($order_ef_name, $shipping_ef_keys)) {
+							$shipping->array_options[$order_ef_key] = $order_ef;
 						}
 					}
 
@@ -643,18 +649,26 @@ class ShippableOrder
 
 					foreach ($this->order->lines as $line)
 					{
-
-
 					    $parameters = array('line' => $line ,'TEnt_comm'=>$TEnt_comm,'shipping'=> &$shipping);
 					    $reshook = $hookmanager->executeHooks('handleExpeditionTitleAndTotal',$parameters , $this, $action);    // Note that $action and $object may have been modified by some hooks
-                        if ($reshook < 0){
+                        if ($reshook < 0) {
                             setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
                         }
 
-					    if (!empty($this->TlinesShippable[$line->id]) && $this->TlinesShippable[$line->id]['stock'] > 0)
-						{
+					    if (!empty($this->TlinesShippable[$line->id]) && $this->TlinesShippable[$line->id]['stock'] > 0) {
                             $r  = ($this->TlinesShippable[$line->id]['qty_shippable'] > $this->TlinesShippable[$line->id]['to_ship']) ? $this->TlinesShippable[$line->id]['to_ship'] : $this->TlinesShippable[$line->id]['qty_shippable'];
 							$shipping->addline($TEnt_comm[$this->order->id], $line->id, $r, $line->array_options);
+						}
+					}
+
+					// Manage Extrafields
+					$extrafields = new Extrafields ($db);
+					$shipping_ef_keys = array_keys($extrafields->fetch_name_optionals_label('expedition'));
+					$this->order->fetch_optionals();
+					foreach($this->order->array_options as $order_ef_key => $order_ef) {
+						$order_ef_name = preg_replace('/^options_/', '', $order_ef_key);
+						if (in_array($order_ef_name, $shipping_ef_keys)) {
+							$shipping->array_options[$order_ef_key] = $order_ef;
 						}
 					}
 
