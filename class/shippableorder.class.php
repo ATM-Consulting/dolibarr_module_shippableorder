@@ -317,7 +317,7 @@ class ShippableOrder
         global $langs, $conf;
         $out = $langs->trans('VirtualStockDetailHeader');
 
-		if (!empty($conf->mrp->enabled)) {
+		if (isModEnabled('mrp')) {
 			$out .= $langs->trans('VirtualStockDetail', $langs->trans('MO'), $langs->trans('MO_status'));
 		}
 
@@ -583,7 +583,7 @@ class ShippableOrder
                         }
 						if ($this->TlinesShippable[$line->id]['stock'] > 0 && in_array($line->id, $lineids))
 						{
-                            if (! empty($conf->productbatch->enabled) && ! empty($line->fk_product) && ! empty($line->product_tobatch)){
+                            if (isModEnabled('productbatch') && ! empty($line->fk_product) && ! empty($line->product_tobatch)){
 								dol_include_once('/product/class/product.class.php');
 								$product = new Product($db);
 								$product->fetch($line->fk_product);

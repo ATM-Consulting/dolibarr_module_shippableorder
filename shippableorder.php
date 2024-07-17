@@ -255,7 +255,7 @@ else
 	$sql = 'SELECT s.nom, s.rowid as socid, s.client, c.rowid, c.ref, c.total_ht, c.ref_client,';
 	$sql .= ' c.date_valid, c.date_commande, c.note_private, c.date_livraison, c.fk_statut, c.facture as facturee,';
 }
-if (!empty($conf->clinomadic->enabled)) {
+if (isModEnabled('clinomadic')) {
 	$sql .= " ce.reglement_recu,";
 }
 if(getDolGlobalString('SHIPPABLEORDER_SELECT_BY_LINE'))  $sql .= 'cd.qty as qty_prod';
@@ -263,7 +263,7 @@ else $sql .= ' (SELECT SUM(qty) FROM ' . MAIN_DB_PREFIX . 'commandedet WHERE fk_
 $sql .= ' FROM ' . MAIN_DB_PREFIX . 'societe as s';
 $sql .= ', ' . MAIN_DB_PREFIX . 'commande as c';
 $sql .= ', ' . MAIN_DB_PREFIX . 'commandedet as cd';
-if (!empty($conf->clinomadic->enabled)) {
+if (isModEnabled('clinomadic')) {
 	$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "commande_extrafields as ce ON (ce.fk_object = cd.fk_commande)";
 }
 if(getDolGlobalString('SHIPPABLEORDER_SELECT_BY_LINE')){
@@ -450,7 +450,7 @@ if ($resql) {
 	if ($limit === false)
 		print '<input type="hidden" name="show_all" value="1" />';
 	print_liste_field_titre($langs->trans('Ref'), $_SERVER["PHP_SELF"], 'c.ref', '', $param, '', $sortfield, $sortorder);
-	if (!empty($conf->clinomadic->enabled))
+	if (isModEnabled('clinomadic'))
 		print_liste_field_titre($langs->trans('Règlement'), $_SERVER["PHP_SELF"], 'c.ref_client', '', $param, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans('RefCustomerOrder'), $_SERVER["PHP_SELF"], 'c.ref_client', '', $param, '', $sortfield, $sortorder);
 	if (getDolGlobalString('SHIPPABLEORDER_SELECT_BY_LINE'))
@@ -586,7 +586,7 @@ if ($resql) {
 			print '</td>';
 			
 			// Payer : oui/non spécific Nomadic
-			if (!empty($conf->clinomadic->enabled)) {
+			if (isModEnabled('clinomadic')) {
 				print '<td align="center" class="nowrap" style="font-weight:bold;">' . ucfirst(($objp->reglement_recu != 'oui') ? "Non" : $objp->reglement_recu) . '</td>';
 			}
 			

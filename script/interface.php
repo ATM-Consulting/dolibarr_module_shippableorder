@@ -49,7 +49,7 @@ function _getBatchLines($quantityToBeDelivered, $fk_product, $lineid, $warehouse
 	 * Copier coller de la card expedition
 	 */
 
-	if (!empty($conf->productbatch->enabled) && $product->hasbatch())
+	if (isModEnabled('productbatch') && $product->hasbatch())
 	{
 
 		$out='';
