@@ -61,7 +61,7 @@ class modShippableOrder extends DolibarrModules
 		$this->description = "Description of module ShippableOrder";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 
-		$this->version = '2.5.1';
+		$this->version = '2.5.2';
 		// Url to the file with your last numberversion of this module
 		require_once __DIR__ . '/../../class/techatm.class.php';
 		$this->url_last_version = \shippableorder\TechATM::getLastModuleVersionUrl($this);
@@ -93,7 +93,7 @@ class modShippableOrder extends DolibarrModules
 
 		// Dependencies
 		$this->hidden = false;			// A condition to hide module
-		$this->depends = array("modStock", "modCommande");		// List of modules id that must be enabled if this module is enabled
+		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->conflictwith = array();	// List of modules id this module is in conflict with
 		$this->phpmin = array(7,0);					// Minimum version of PHP required by module
@@ -156,13 +156,13 @@ class modShippableOrder extends DolibarrModules
 		// $this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
 		// $this->rights[$r][1] = 'Permision label';	// Permission label
 		// $this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
-		// $this->rights[$r][4] = 'level1';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		// $this->rights[$r][5] = 'level2';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		// $this->rights[$r][4] = 'level1';				// In php code, permission will be checked by test if ($user->hasRight("permkey", "level1", "level2"))
+		// $this->rights[$r][5] = 'level2';				// In php code, permission will be checked by test if ($user->hasRight("permkey", "level1", "level2"))
 		// $r++;
 		$this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Lire les commandes expédiables';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'read';				// In php code, permission will be checked by test if ($user->hasRight("permkey", "level1", "level2"))
 		$r++;
 
 
@@ -180,7 +180,7 @@ class modShippableOrder extends DolibarrModules
 								'langs'=>'shippableorder@shippableorder',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1,
 								'enabled'=>"isModEnabled('shippableorder')",	// Define condition to show or hide menu entry. Use "isModEnabled('mymodule')" if entry must be visible if module is enabled.
-								'perms'=>'$user->rights->commande->lire',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+								'perms'=>'$user->rights->commande->lire',			                // Use 'perms'=>'$user->hasRight("mymodule", "level1", "level2")' if you want your menu with a permission rules
 								'target'=>'',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;

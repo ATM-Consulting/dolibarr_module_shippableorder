@@ -712,8 +712,7 @@ class ShippableOrder
 
 					header("Location: ".$_SERVER["PHP_SELF"].'?'.http_build_query($TURL) );
 				}else{
-					if ($dol_version <= 3.6) header("Location: ".dol_buildpath('/expedition/liste.php',1));
-					else header("Location: ".dol_buildpath('/expedition/list.php',1));
+					header("Location: ".dol_buildpath('/expedition/list.php',1));
 					exit;
 				}
 			}
@@ -725,8 +724,7 @@ class ShippableOrder
 				{
 					header("Location: ".$_SERVER["PHP_SELF"].'?'.http_build_query($TURL) );
 				}else{
-					if ($dol_version <= 3.6) header("Location: ".dol_buildpath('/expedition/liste.php',1));
-					else header("Location: ".dol_buildpath('/expedition/list.php',1));
+					header("Location: ".dol_buildpath('/expedition/list.php',1));
 					exit;
 				}
 			}
@@ -738,8 +736,7 @@ class ShippableOrder
 			{
 				header("Location: ".$_SERVER["PHP_SELF"]);
 			}else{
-				if ($dol_version <= 3.6) header("Location: ".dol_buildpath('/expedition/liste.php',1));
-				else header("Location: ".dol_buildpath('/expedition/list.php',1));
+				header("Location: ".dol_buildpath('/expedition/list.php',1));
 				exit;
 			}
 		}
@@ -778,8 +775,7 @@ class ShippableOrder
 			$outputlangs = new Translate("",$conf);
 			$outputlangs->setDefaultLang($newlang);
 		}
-		if((float)DOL_VERSION > 5) $result=$shipment->generateDocument($shipment->modelpdf, $outputlangs,$hidedetails, $hidedesc, $hideref);
-		else $result=expedition_pdf_create($db, $shipment, $shipment->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
+		$result=$shipment->generateDocument($shipment->modelpdf, $outputlangs,$hidedetails, $hidedesc, $hideref);
 
 		if($result > 0) {
 			$objectref = dol_sanitizeFileName($shipment->ref);

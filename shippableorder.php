@@ -43,7 +43,6 @@ $deliverymonth = GETPOST("deliverymonth", "int");
 $sref = GETPOST('sref', 'alpha');
 $sref_client = GETPOST('sref_client', 'alpha');
 $snom = GETPOST('snom', 'alpha');
-$sall = GETPOST('sall');
 $socid = GETPOST('socid', 'int');
 $search_user = GETPOST('search_user', 'int');
 $search_sale = GETPOST('search_sale', 'int');
@@ -287,12 +286,7 @@ if (! $user->hasRight('societe', 'client', 'voir') && ! $socid)
 if ($sref) {
 	$sql .= natural_search('c.ref', $sref);
 }
-if ($sall) {
-	$sql .= natural_search(array(
-			'c.ref',
-			'c.note_private'
-	), $sall);
-}
+
 if ($ordermonth > 0) {
 	if ($orderyear > 0 && empty($day))
 		$sql .= " AND c.date_commande BETWEEN '" . $db->idate(dol_get_first_day($orderyear, $ordermonth, false)) . "' AND '" . $db->idate(dol_get_last_day($orderyear, $ordermonth, false)) . "'";
