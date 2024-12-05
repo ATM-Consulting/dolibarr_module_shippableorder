@@ -5,6 +5,7 @@
 
 
 ## RELEASE 2.5
+- FIX : Compat 21 - *05/12/2024* - 2.5.2 (External PR)
 - FIX : Copying extrafields from order into shipping if same key - *23/10/2024* - 2.5.1 (External PR)
 - FIX : Compat v20
   Changed Dolibarr compatibility range to 16 min - 20 max - *24/07/2024* - 2.5.0
