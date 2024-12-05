@@ -317,7 +317,7 @@ class ShippableOrder
         global $langs, $conf;
         $out = $langs->trans('VirtualStockDetailHeader');
 
-		if (!empty($conf->mrp->enabled)) {
+		if (isModEnabled("mrp")) {
 			$out .= $langs->trans('VirtualStockDetail', $langs->trans('MO'), $langs->trans('MO_status'));
 		}
 
@@ -583,7 +583,7 @@ class ShippableOrder
                         }
 						if ($this->TlinesShippable[$line->id]['stock'] > 0 && in_array($line->id, $lineids))
 						{
-                            if (! empty($conf->productbatch->enabled) && ! empty($line->fk_product) && ! empty($line->product_tobatch)){
+                            if (isModEnabled("productbatch") && ! empty($line->fk_product) && ! empty($line->product_tobatch)){
 								dol_include_once('/product/class/product.class.php');
 								$product = new Product($db);
 								$product->fetch($line->fk_product);
@@ -693,8 +693,7 @@ class ShippableOrder
 
 					header("Location: ".$_SERVER["PHP_SELF"].'?'.http_build_query($TURL) );
 				}else{
-					if ($dol_version <= 3.6) header("Location: ".dol_buildpath('/expedition/liste.php',1));
-					else header("Location: ".dol_buildpath('/expedition/list.php',1));
+					 header("Location: ".dol_buildpath('/expedition/list.php',1));
 					exit;
 				}
 			}
@@ -706,8 +705,7 @@ class ShippableOrder
 				{
 					header("Location: ".$_SERVER["PHP_SELF"].'?'.http_build_query($TURL) );
 				}else{
-					if ($dol_version <= 3.6) header("Location: ".dol_buildpath('/expedition/liste.php',1));
-					else header("Location: ".dol_buildpath('/expedition/list.php',1));
+					 header("Location: ".dol_buildpath('/expedition/list.php',1));
 					exit;
 				}
 			}
@@ -719,8 +717,7 @@ class ShippableOrder
 			{
 				header("Location: ".$_SERVER["PHP_SELF"]);
 			}else{
-				if ($dol_version <= 3.6) header("Location: ".dol_buildpath('/expedition/liste.php',1));
-				else header("Location: ".dol_buildpath('/expedition/list.php',1));
+				header("Location: ".dol_buildpath('/expedition/list.php',1));
 				exit;
 			}
 		}
@@ -759,8 +756,7 @@ class ShippableOrder
 			$outputlangs = new Translate("",$conf);
 			$outputlangs->setDefaultLang($newlang);
 		}
-		if((float)DOL_VERSION > 5) $result=$shipment->generateDocument($shipment->modelpdf, $outputlangs,$hidedetails, $hidedesc, $hideref);
-		else $result=expedition_pdf_create($db, $shipment, $shipment->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
+		 $result=$shipment->generateDocument($shipment->modelpdf, $outputlangs,$hidedetails, $hidedesc, $hideref);
 
 		if($result > 0) {
 			$objectref = dol_sanitizeFileName($shipment->ref);
