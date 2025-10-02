@@ -5,6 +5,7 @@
 
 
 ## RELEASE 2.5
+- FIX : Compat V22 - *02/10/2025* - 2.5.3
 - FIX : Compat 21 - *05/12/2024* - 2.5.2 (External PR)
 - FIX : Copying extrafields from order into shipping if same key - *23/10/2024* - 2.5.1 (External PR)
 - FIX : Compat v20
