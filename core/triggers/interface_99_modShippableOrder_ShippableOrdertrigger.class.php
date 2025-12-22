@@ -48,7 +48,7 @@ class InterfaceShippableOrdertrigger
         $this->db = $db;
 
         $this->name = preg_replace('/^Interface/i', '', get_class($this));
-        $this->family = "demo";
+        $this->family = "ATM Consulting - CRM";
         $this->description = "Triggers of this module are empty functions."
             . "They have no effect."
             . "They are provided for tutorial purpose only.";
@@ -100,18 +100,21 @@ class InterfaceShippableOrdertrigger
     }
 
     /**
-     * Function called when a Dolibarrr business event is done.
-     * All functions "run_trigger" are triggered if file
-     * is inside directory core/triggers
-     *
-     * 	@param		string		$action		Event action code
-     * 	@param		Object		$object		Object
-     * 	@param		User		$user		Object user
-     * 	@param		Translate	$langs		Object langs
-     * 	@param		conf		$conf		Object conf
-     * 	@return		int						<0 if KO, 0 if no triggered ran, >0 if OK
-     */
-    public function run_trigger($action, $object, $user, $langs, $conf)
+	/**
+	 * Executes actions based on Dolibarr business events.
+	 *
+	 * Specifically, when the 'SHIPPING_VALIDATE' action is triggered,
+	 * it checks if the order associated with the shipping is fully shipped.
+	 * If so, and if 'SHIPPABLEORDER_CLOSE_ORDER' is enabled, the order is closed.
+	 *
+	 * @param string $action Event action code (e.g., 'SHIPPING_VALIDATE').
+	 * @param Object $object The object related to the event (e.g., Expedition object for SHIPPING_VALIDATE).
+	 * @param User $user User object.
+	 * @param Translate $langs Language object.
+	 * @param conf $conf Configuration object.
+	 * @return int <0 if KO, 0 if no triggered ran, >0 if OK.
+	 */
+    public function runTrigger($action, $object, $user, $langs, $conf)
     {
 		if ($action == 'SHIPPING_VALIDATE') {
 
@@ -119,22 +122,22 @@ class InterfaceShippableOrdertrigger
 			if(getDolGlobalString('SHIPPABLEORDER_CLOSE_ORDER')) {
 				dol_include_once('/commande/class/commande.class.php');
 				dol_include_once('/shippableorder/class/shippableorder.class.php');
-				
+
 				$object->fetchObjectLinked(0,'commande');
-				
+
 				if(!empty($object->linkedObjects['commande'])){
 					$commande = array_pop($object->linkedObjects['commande']);
-					
+
 					$orderShippable = new ShippableOrder($this->db);
 					$orderShippable->isOrderShippable($commande->id);
-					
+
 					if($orderShippable->nbProduct == 0) {
 						$commande->cloture($user);
 						setEventMessage($langs->trans('OrderClosed',$commande->ref));
 					}
 				}
 			}
-			
+
 			dol_syslog(
 				"Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
 			);
